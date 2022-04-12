@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Short Links</title>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <script crossorigin="anonymous"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script crossorigin="anonymous"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+    .urlform{
+        margin-top: 20%;
+    }
+
+    .form-message{
+        margin: auto;
+    }
+    #short-link-output{
+        text-align: center;
+    }
+    #output-container{
+        text-align: center;
+        margin-top: 5rem;
+    }
+    #copy-btn{
+        margin-left: 20px;
+    }
+    @media (max-width: @screen-xs) {
+        body{font-size: 10px;}
+    }
+    @media (max-width: @screen-sm) {
+        body{font-size: 14px;}
+    }
+    #short-link{
+        font-size: 1 rem;
+        text-align: center;
+        background-color: yellow;
+    }
+
+
+    </style>
+</head>
+
+<body>
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#"><i class="bi bi-link-45deg"></i>Short Links</a>
+        <a href="https://github.com/suraj-subramanian" target="_blank">
+            <button class="btn btn-secondary" data-bs-original-title="Go to GitHub" data-bs-placement="bottom" data-bs-toggle="tooltip"
+                    title="Go to GitHub">
+                <i class="bi bi-github"></i>
+            </button>
+        </a>
+    </div>
+</nav>
+<div class="container">
+    <div class="urlform">
+        <div class="form-message">
+            <h2>Enter the URL to shorten.</h2>
+            <h6>Short Links are valid for 24 hours.</h6>
+        </div>
+        <form class="needs-validation">
+            <div class="input-group input-group-lg">
+                <div class="input-group">
+                    <input aria-describedby="input-group-button-right" class="form-control" id="url-input" pattern="[Hh][Tt][Tt][Pp][Ss]?:\/\/(?:(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]+-?)*[a-zA-Z\u00a1-\uffff0-9]+)*(?:\.(?:[a-zA-Z\u00a1-\uffff]{2,}))(?::\d{2,5})?(?:\/[^\s]*)?"
+                           placeholder="Paste your long URL here..."
+                           required
+                           type="text">
+                    <div class="invalid-feedback">
+                        URL is not valid.
+                    </div>
+                    <button class="btn btn-primary" id="shorten-btn" type="button">Shorten!</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="output-container">
+        <a id="short-link"></a>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $("#shorten-btn").click(() => {
+            x = $("#url-input").val()
+
+            if(x===''){
+                alert("URL is not valid!")
+                return
+            }
+
+            data = { link: x }
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/link",
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType:"application/json",
+                success: function (data, status, jqXHR) {
+                    console.log(data)
+                    $("#short-link").attr("href",data.shortenedLink)
+                    $("#short-link").text(data.shortenedLink)
+                },
+                error: function (jqXHR, status) {
+                     // error handler
+                     console.log(jqXHR);
+                     alert('Oops, something went wrong!');
+                }
+            });
+        });
+    });
+
+
+</script>
+</body>
+
+</html>
